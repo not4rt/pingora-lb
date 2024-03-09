@@ -1,0 +1,15 @@
+version: "3.5"
+name: "pingora-load-balancer"
+
+services:
+  load-balancer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SERVER1_HOST: "1.1.1.1"
+      SERVER2_HOST: "1.0.1.0"
+      SERVER_PORT: "8080"
+      LISTEN_PORT: "9999"
+    expose:
+      - "9999"

@@ -50,7 +50,7 @@ fn main() {
     let lb_addr = format!("0.0.0.0:{listen_port}");
 
     let upstreams =
-        LoadBalancer::try_from_iter([server1_url, server2_url]).unwrap();
+        LoadBalancer::try_from_iter([server1_addr, server2_addr]).unwrap();
 
     let mut lb = http_proxy_service(&my_server.configuration, LB(Arc::new(upstreams)));
         lb.add_tcp(&lb_addr);
