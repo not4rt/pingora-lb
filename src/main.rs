@@ -40,13 +40,10 @@ fn main() {
     let mut my_server = Server::new(None).unwrap();
     my_server.bootstrap();
 
-    let server1_host = std::env::var("SERVER1_HOST").expect("SERVER1_HOST must be set");
-    let server2_host = std::env::var("SERVER2_HOST").expect("SERVER2_HOST must be set");
-    let server_port = std::env::var("SERVER_PORT").expect("SERVER_PORT must be set");
+    let server1_addr = std::env::var("SERVER1_ADDR").expect("SERVER1_ADDR must be set");
+    let server2_addr = std::env::var("SERVER2_ADDR").expect("SERVER2_ADDR must be set");
+
     let listen_port = std::env::var("LISTEN_PORT").expect("LISTEN_PORT must be set");
-    
-    let server1_addr = format!("{server1_host}:{server_port}");
-    let server2_addr = format!("{server2_host}:{server_port}");
     let lb_addr = format!("0.0.0.0:{listen_port}");
 
     let upstreams =

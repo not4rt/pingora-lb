@@ -7,9 +7,8 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      SERVER1_HOST: "1.1.1.1"
-      SERVER2_HOST: "1.0.1.0"
-      SERVER_PORT: "8080"
+      SERVER1_ADDR: "1.1.1.1:443"
+      SERVER2_ADDR: "1.0.1.0:443"
       LISTEN_PORT: "9999"
     expose:
       - "9999"
