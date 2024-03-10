@@ -1,5 +1,5 @@
 # Pingora Load Balancer
-A simple *blazing fast* load balancer using pingora, uses round-robin between 2 servers.
+A simple *blazing fast* load balancer using pingora. It justs makes round-robin between 2 servers.
 
 ## Environment Variables Needed
 - **SERVER1_ADDR** - First backend host/ip and port.                Example: SERVER1_ADDR="1.1.1.1:443"
