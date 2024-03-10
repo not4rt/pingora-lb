@@ -44,5 +44,6 @@ fn main() {
 
     my_server.add_service(lb);
 
+    println!("Load-balancer running at http://{}/", lb_addr);
     my_server.run_forever();
 }

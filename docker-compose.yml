@@ -3,9 +3,7 @@ name: "pingora-lb"
 
 services:
   pingora:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: not4rt/pingora-lb
     environment:
       SERVER1_ADDR: "1.1.1.1:443"
       SERVER2_ADDR: "1.0.1.0:443"
