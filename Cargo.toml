@@ -1,5 +1,5 @@
 [package]
-name = "load-balancer"
+name = "pingora-lb"
 version = "0.1.0"
 edition = "2021"
 

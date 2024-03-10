@@ -18,7 +18,7 @@ impl ProxyHttp for LB {
             .select(b"", 256) // hash doesn't matter for round robin
             .unwrap();
 
-        println!("upstream peer is: {upstream:?}");
+        //println!("upstream peer is: {upstream:?}");
 
         // Set SNI to one.one.one.one
         let peer = Box::new(HttpPeer::new(upstream, false, "one.one.one.one".to_string()));

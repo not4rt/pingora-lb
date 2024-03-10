@@ -22,4 +22,4 @@ COPY --from=build /app /app
 
 EXPOSE 9999
 
-CMD ./target/release/load-balancer
+CMD ./target/release/pingora-lb
