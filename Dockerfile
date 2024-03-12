@@ -1,27 +1,22 @@
-FROM rust:1.76.0 as base
-
-RUN apt-get update -yqq && apt-get install -yqq cmake g++
-
+FROM lukemathwalker/cargo-chef:latest-rust-1 AS chef
 WORKDIR /app
 
-FROM base as build
+FROM chef AS planner
+COPY . .
+RUN cargo chef prepare --recipe-path recipe.json
 
-RUN mkdir src; touch src/main.rs
+FROM chef AS builder 
+COPY --from=planner /app/recipe.json recipe.json
+RUN apt-get update -yqq && apt-get install -yqq cmake g++
+# Build dependencies - this is the caching Docker layer!
+RUN cargo chef cook --release --recipe-path recipe.json
+# Build application
+COPY . .
+RUN cargo build --release --bin pingora-lb
 
-COPY Cargo.toml Cargo.lock ./
-
-COPY src ./src/
-
-ENV SERVER1_ADDR 1.1.1.1:443
-ENV SERVER2_ADDR 1.0.1.0:443
-ENV LISTEN_PORT 9999
-
-RUN cargo build --release
-
-FROM base
-
-COPY --from=build /app /app
-
-EXPOSE 9999
-
-CMD ./target/release/pingora-lb
+# We do not need the Rust toolchain to run the binary!
+FROM debian:bookworm-slim AS runtime
+WORKDIR /app
+COPY --from=builder /app/target/release/pingora-lb /usr/local/bin
+COPY conf.yaml /app
+ENTRYPOINT ["/usr/local/bin/pingora-lb", "-c", "/app/conf.yaml"]

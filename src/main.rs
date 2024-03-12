@@ -1,8 +1,11 @@
 use async_trait::async_trait;
 use pingora::prelude::*;
 use std::sync::Arc;
+use structopt::StructOpt;
 
-pub struct LB(Arc<LoadBalancer<RoundRobin>>);
+use pingora_core::server::configuration::Opt;
+
+pub struct LB(Arc<LoadBalancer<RoundRobin>>) ;
 
 #[async_trait]
 impl ProxyHttp for LB {
@@ -21,13 +24,28 @@ impl ProxyHttp for LB {
         //println!("upstream peer is: {upstream:?}");
 
         // Set SNI to one.one.one.one
-        let peer = Box::new(HttpPeer::new(upstream, false, "one.one.one.one".to_string()));
+        let peer = Box::new(HttpPeer::new(upstream, false, "backend".to_string()));
         Ok(peer)
+    }
+
+    async fn upstream_request_filter(
+        &self,
+        _session: &mut Session,
+        upstream_request: &mut RequestHeader,
+        _ctx: &mut Self::CTX,
+    ) -> Result<()> {
+        _session.set_keepalive(Some(30));
+        upstream_request.insert_header("Connection", "Keep-Alive").unwrap();
+        upstream_request.insert_header("Keep-Alive", "timeout=5, max=1000").unwrap();
+        upstream_request.insert_header("Proxy-Connection", "keep-alive").unwrap();
+        Ok(())
     }
 }
 
 fn main() {
-    let mut my_server = Server::new(None).unwrap();
+    // read command line arguments
+    let opt = Opt::from_args();
+    let mut my_server = Server::new(Some(opt)).unwrap();
     my_server.bootstrap();
 
     let server1_addr = std::env::var("SERVER1_ADDR").expect("SERVER1_ADDR must be set");
